@@ -16,13 +16,10 @@ from pathlib import Path
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(os.path.join(BASE_DIR, 'apps'))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+# sys.path.append(os.path.join(BASE_DIR, 'apps'))
+# PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-_14lk7g3w*3)u8-=yy-zoy$3-t^psagvqiett!b!eh1(i2d1fx'
@@ -49,9 +46,10 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'dj_rest_auth',
     'drf_yasg',
+    'ckeditor',
 ]
 
-AUTH_USER_MODEL = 'users.User'
+
 
 
 MIDDLEWARE = [
@@ -77,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -157,7 +156,10 @@ SWAGGER_SETTINGS = {
 }
 
 
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
