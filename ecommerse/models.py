@@ -1,5 +1,5 @@
 import datetime
-
+    
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django_resized import ResizedImageField
@@ -74,13 +74,6 @@ class Image(models.Model):
     )
 
 
-class Product_color(models.Model):
-    name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-
 class Measurements(models.Model):
     name = models.CharField(max_length=200)
     size_in_number = models.PositiveIntegerField()
@@ -108,8 +101,8 @@ class Product(models.Model):
     tags = models.ManyToManyField(Tags, related_name='product_tags')
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, null=True, related_name='product_category')
-    product_colors = models.ManyToManyField(
-        Product_color, related_name='product_color')
+    # product_colors = models.ManyToManyField(
+    #     Product_color, related_name='product_color')
     # edit both after create and add fields into User model
     likes = models.ManyToManyField(User, related_name='product_likes')
     dislikes = models.ManyToManyField(User, related_name='product_dislikes')
@@ -118,6 +111,15 @@ class Product(models.Model):
     old_price = models.DecimalField(max_digits=6, decimal_places=2)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     size = models.ManyToManyField(Measurements, related_name='product_sizes')
+
+
+class Product_color(models.Model):
+    name = models.CharField(max_length=200)
+    product = models.ForeignKey(
+        Product, on_delete=models.SET_NULL, null=True, blank=True, related_name='product_color')
+
+    def __str__(self):
+        return self.name
 
 
 class Specifications(models.Model):
@@ -257,5 +259,5 @@ class Order(models.Model):
     def __str__(self):
         return f"{self.customer.name} ordered {self.product.title}"
 
-
 # add Basemodel into models
+# add_rating and rating_stars
