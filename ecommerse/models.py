@@ -111,7 +111,8 @@ class Product(models.Model):
     old_price = models.DecimalField(max_digits=6, decimal_places=2)
     price = models.DecimalField(max_digits=6, decimal_places=2)
     size = models.ManyToManyField(Measurements, related_name='product_sizes')
-
+    is_available = models.BooleanField(default=False)
+    
 
 class Product_color(models.Model):
     name = models.CharField(max_length=200)
