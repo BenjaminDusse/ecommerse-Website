@@ -1,10 +1,11 @@
 import datetime
-    
+
 from django.db import models
 from django.core.validators import FileExtensionValidator
-from django_resized import ResizedImageField
+from django.db.models.fields.files import ImageField
 from django.utils import timezone
 from django.contrib.auth.models import User
+from shared.django.model import BaseModel
 
 
 class Tags(models.Model):
@@ -87,23 +88,21 @@ class Product(models.Model):
     title = models.CharField(max_length=200)
     video = models.FileField(upload_to='product/videos/', null=True, blank=True,
                              validators=[FileExtensionValidator(allowed_extensions=['MOV', 'avi', 'mp4', 'webm', 'mkv'])])
-    image = ResizedImageField(size=[220, 220], upload_to='product/image/')
-    product_pics = models.ImageField(upload_to="product/product_pics/", )
-    models.OneToOneField(ImageAlbum, related_name='model',
-                         on_delete=models.CASCADE)
+    image = ImageField(size=[220, 220], upload_to='product/image/')
+    product_pics = models.OneToOneField(ImageAlbum, related_name='model',
+                                        on_delete=models.CASCADE)
     manufacturer = models.OneToOneField(
         Manufacturer,
         on_delete=models.CASCADE,
         null=True
     )
-    album = models.OneToOneField(
-        ImageAlbum, related_name='model', on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tags, related_name='product_tags')
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, null=True, related_name='product_category')
     # product_colors = models.ManyToManyField(
     #     Product_color, related_name='product_color')
     # edit both after create and add fields into User model
+    # yangi model yaratiladi ikkalasigayam
     likes = models.ManyToManyField(User, related_name='product_likes')
     dislikes = models.ManyToManyField(User, related_name='product_dislikes')
     url = models.SlugField(max_length=300, unique=True)
@@ -112,7 +111,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     size = models.ManyToManyField(Measurements, related_name='product_sizes')
     is_available = models.BooleanField(default=False)
-    
+
 
 class Product_color(models.Model):
     name = models.CharField(max_length=200)
@@ -260,5 +259,33 @@ class Order(models.Model):
     def __str__(self):
         return f"{self.customer.name} ordered {self.product.title}"
 
+
+class RatingStar(models.Model):
+    value = models.SmallIntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.value}'
+
+    class Meta:
+        verbose_name = "Rating Star"
+        verbose_name_plural = "Rating Stars"
+        ordering = ["-value"]
+
+
+class Rating(models.Model):
+    ip = models.CharField(max_length=15)
+    star = models.ForeignKey(
+        RatingStar, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="ratings", null=True, blank=True)
+    review = models.ManyToManyField(
+        Reviews, related_name='reviews', null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.star} - {self.product}"
+
+    class Meta:
+        verbose_name = "Rating"
+        verbose_name_plural = "Ratings"
+
 # add Basemodel into models
-# add_rating and rating_stars
