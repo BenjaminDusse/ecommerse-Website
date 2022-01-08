@@ -7,7 +7,7 @@ class BaseModel(models.Model):
     modified_date = models.DateTimeField(auto_now=True)
 
     class Meta:
-        abstractc = True
+        abstract = True
 
 class DeleteModel(models.Model):
     is_available = models.BooleanField(default=False)
